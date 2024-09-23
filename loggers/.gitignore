@@ -1,0 +1,6 @@
+# required to preserve folder structure while pushing to git
+
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore

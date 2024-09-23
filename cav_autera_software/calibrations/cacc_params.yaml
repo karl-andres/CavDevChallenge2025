@@ -1,0 +1,15 @@
+---
+default:
+
+  # Distance PID parameters
+  distancePidKp: 605.4493088972449
+  distancePidKi: 579.7473873884766
+  distancePidKd: 982.6336241628014
+
+  # Speed PID parameters
+  speedPidKp: 977
+  speedPidKi: 861
+  speedPidKd: 916
+  
+  # static weighting
+  speed_weight: 0.67

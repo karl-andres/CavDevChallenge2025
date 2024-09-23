@@ -1,0 +1,32 @@
+---
+straight_road:
+  num_lanes: 2
+  lane_width: 3.7
+  repeat: True
+  lane_segments:
+    - straight: {length: 5000}
+
+oval_track:
+  num_lanes: 4
+  lane_width: 3.7
+  repeat: True
+  lane_segments:
+    - straight: {length: 1000}
+    - arc: {radius: 500, rotations: 0.5, clockwise: True}
+    - straight: {length: 1000}
+    - arc: {radius: 500, rotations: 0.5, clockwise: True}
+
+bendy_road:
+  num_lanes: 4
+  lane_width: 3.7
+  repeat: True
+  lane_segments:
+    - straight: {length: 100}
+    - arc: {radius: 200, rotations: 0.125, clockwise: True}
+    - straight: {length: 100}
+    - arc: {radius: 200, rotations: 0.125, clockwise: False}
+    - straight: {length: 100}
+    - arc: {radius: 200, rotations: 0.125, clockwise: False}
+    - straight: {length: 100}
+    - arc: {radius: 200, rotations: 0.125, clockwise: True}
+    - straight: {length: 100}
