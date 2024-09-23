@@ -1,7 +1,7 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
-#include "CavLyriqModel.h"
+#include "lyriq_model/CavLyriqModel.h"
 #include "controller.h"
 #include <Eigen/Dense>
 #include <climits>
