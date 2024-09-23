@@ -53,7 +53,7 @@ def run_besee(
         output_filename = f'loggers_{scenario_name}'
         
     # setup command to run besee (redirect output to DEVNULL if suppress output specified)
-    besee_command = f"cd {str(PROJECT_BASE / 'bin')}; {besee_exe} {scenario_name} {sim_time} {output_filename}"
+    besee_command = f"cd {str(PROJECT_BASE / 'bin')} && {besee_exe} {scenario_name} {sim_time} {output_filename}"
     stdout = subprocess.DEVNULL if suppress_output else None
     stderr = subprocess.STDOUT if suppress_output else None
     
