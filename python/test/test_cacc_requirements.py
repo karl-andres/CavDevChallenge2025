@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys
 import pytest
-import numpy as np, pandas as pd
+import pandas as pd
 
 PROJECT_BASE = Path(__file__).parent.parent.parent
 
