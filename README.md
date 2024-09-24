@@ -27,8 +27,8 @@ For any questions or feedback, please contact khzyms@mcmaster.ca.
 4. Add your vcpkg directory to your environment variables so cmake can find your packages during the build process.
   - On Windows, search for Environment Variables and add a new one under System Variables. Call it VCPKG_DIR and set it to your install location.
   - On Linux, run `gedit ~/.bashrc` and add a line `export VCPKG_DIR=[YOUR_LOCATION]`. More information: https://askubuntu.com/questions/58814/how-do-i-add-environment-variables#58828
-5. Update submodules since BESEE depends on a car dynamics model repo and the team controls software repo.
-  - Run `git submodule update --init --recursive`
+5. Install Python dependencies using the pip package manger.
+  - Run `pip install -r requirements.txt`.
 
 ## Building and Running the Project
 
