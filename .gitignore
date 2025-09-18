@@ -6,3 +6,4 @@ cpp/docs/doxygen/*
 cpp/docs/sphinx/*
 **/.clangd
 **.zip
+**.log
