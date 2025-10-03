@@ -35,7 +35,7 @@ def create_cacc_optimized_drive_cycle(
         dt: Time step in seconds (0.02s = 50Hz, matches BESEE)
         max_speed_mps: Maximum speed in m/s
         min_speed_mps: Minimum speed in m/s
-        scenario_type: Type of scenario ("highway", "city", "mixed")
+        scenario_type: Type of scenario ("highway", "city", "mixed") 
     
     Returns:
         DataFrame with 'Time (s)' and 'Speed (m/s)' columns
