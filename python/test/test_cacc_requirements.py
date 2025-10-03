@@ -16,9 +16,7 @@ from conftest import get_besee_logs_for_scenario_list
 from metrics import rms_jerk
 
 CACC_SCENARIOS = [
-    'open_straight_road',
-    'straight_road_lead_vehicle_ftp',
-    'straight_road_lead_vehicle_ftp2'
+    'straight_road_cacc_test',
 ]
 CACC_SCENARIO_DATA = get_besee_logs_for_scenario_list(CACC_SCENARIOS, suppress_output=True, delete_csv=True)
 

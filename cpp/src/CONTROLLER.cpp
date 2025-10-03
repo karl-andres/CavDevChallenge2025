@@ -1,38 +1,99 @@
 #include "controller.h"
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 
 // Constructor
 CaccController::CaccController() {
-    // If you want to save any variables in memory (e.g. your constants for a PID controller),
-    // you will need to add them to the cpp/include/controller.h file and set their values here
-    x = 10;
+    // nothing special
 }
 
-// Function that is called every timestep
-// It calculates the torque and break commands and passes them back to BESEE
+// Function called every timestep by BESEE
 void CaccController::controllerStep(
-        // torqueCommand_nm and brakeCommand_mps2 are passed by reference so they are basically the return values of your function
-        // See: https://www.geeksforgeeks.org/cpp-functions-pass-by-reference/
         double &torqueCommand_nm,
         double &brakeCommand_mps2,
-
-        // The target speed you are aiming to reach (assuming no lead vehicle)
-        double setSpeed, 
-        // Your current speed
-        double egoSpeed_mps, 
-        // If there is a vehicle in front
+        double setSpeed,
+        double egoSpeed_mps,
         bool leadExists,
-        // x, x velocity, y, y velocity of the lead vehicle (all 0 if there is no lead)
         double leadXPos,
         double leadXVel,
         double leadYPos,
         double leadYVel)
 {
-    /*
-    YOUR CODE GOES HERE!
-    */
-   
-    // Default outputs
-    torqueCommand_nm = 5000;
-    brakeCommand_mps2 = 0;
+    // --- Parameters ---
+    const double dt = 0.02;                // 50 Hz
+    const double kp_gap = 0.4;             // gain for gap error
+    const double kp_speed = 1.5;           // gain for speed error
+    const double kd = 0.05;                // derivative gain (smoothing)
+    const double timeHeadway = 1.5;        // seconds
+    const double minGap = 8.0;             // meters
+    const double maxAccel = 2.5;           // m/s^2
+    const double maxDecel = -6.0;          // m/s^2
+    const double torqueToAccel = 300.0;    // Nm per m/s^2
+
+    static double prevAccel = 0.0;
+
+    // --- Ensure valid ego speed ---
+    if (egoSpeed_mps < 0.0 || std::isnan(egoSpeed_mps)) {
+        egoSpeed_mps = 0.0;
+    }
+
+    double accelerationCmd = 0.0;
+
+    if (leadExists) {
+        // --- Compute FDCW minimum following distance ---
+        double leadSpeed_mph = leadXVel * 2.237;
+        double fdcw_min = 2.8 * std::pow(leadSpeed_mph, 0.45) + 8.0;
+        if (fdcw_min < minGap) fdcw_min = minGap;
+
+        // --- Desired gap (spacing policy) ---
+        double desiredGap = std::max(fdcw_min, egoSpeed_mps * timeHeadway + minGap);
+
+        // --- Gap error ---
+        double gapError = leadXPos - desiredGap;
+
+        if (gapError < 0.0) {
+            // ❌ Too close → brake to restore gap
+            accelerationCmd = kp_gap * gapError;
+        } else {
+            // ✅ Safe → follow the lead’s speed
+            accelerationCmd = kp_speed * (leadXVel - egoSpeed_mps);
+        }
+    } else {
+        // No lead vehicle → just track set speed
+        accelerationCmd = kp_speed * (setSpeed - egoSpeed_mps);
+    }
+
+    // --- Derivative smoothing ---
+    double derivative = (accelerationCmd - prevAccel) / dt;
+    accelerationCmd += kd * derivative;
+    prevAccel = accelerationCmd;
+
+    // --- Clamp acceleration ---
+    if (accelerationCmd > maxAccel) accelerationCmd = maxAccel;
+    if (accelerationCmd < maxDecel) accelerationCmd = maxDecel;
+
+    // --- Convert to torque/brake ---
+    if (accelerationCmd >= 0) {
+        torqueCommand_nm = accelerationCmd * torqueToAccel;
+        brakeCommand_mps2 = 0.0;
+    } else {
+        torqueCommand_nm = 0.0;
+        brakeCommand_mps2 = -accelerationCmd; // positive decel
+    }
+
+    // --- Safety clamps ---
+    if (torqueCommand_nm > 4500.0) torqueCommand_nm = 4500.0;
+    if (torqueCommand_nm < 0.0) torqueCommand_nm = 0.0;
+    if (brakeCommand_mps2 > 8.0) brakeCommand_mps2 = 8.0;
+    if (brakeCommand_mps2 < 0.0) brakeCommand_mps2 = 0.0;
+
+    // Debug (optional)
+    // std::cout << "Ego=" << egoSpeed_mps
+    //           << " Lead=" << leadXVel
+    //           << " GapError=" << (leadXPos - desiredGap)
+    //           << " Accel=" << accelerationCmd
+    //           << " Torque=" << torqueCommand_nm
+    //           << " Brake=" << brakeCommand_mps2
+    //           << std::endl;
 }

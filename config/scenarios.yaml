@@ -13,3 +13,31 @@ straight_road_lead_vehicle_ftp:
     - lead: {make: tesla_model3, lane_id: 0, offset: 50, speed_profile: ftp75}
   ego: {make: cadillac_lyriq, lane_id: 0}
   controller: cacc
+
+cacc_test_scenario:
+  lanes: straight_road
+  actors:
+    - lead: {make: tesla_model3, lane_id: 0, offset: 50, speed_profile: cacc_cycle2}
+  ego: {make: cadillac_lyriq, lane_id: 0}
+  controller: cacc
+
+straight_road_cacc_test:
+  lanes: straight_road
+  actors:
+    - lead: {make: tesla_model3, lane_id: 0, offset: 30, speed_profile: my_custom_drive_cycle}
+  ego: {make: cadillac_lyriq, lane_id: 0}
+  controller: cacc
+
+oval_track_cacc_test:
+  lanes: oval_track
+  actors:
+    - lead: {make: tesla_model3, lane_id: 0, offset: 40, speed_profile: my_custom_drive_cycle}
+  ego: {make: cadillac_lyriq, lane_id: 0}
+  controller: cacc
+
+bendy_road_cacc_test:
+  lanes: bendy_road
+  actors:
+    - lead: {make: tesla_model3, lane_id: 0, offset: 25, speed_profile: my_custom_drive_cycle}
+  ego: {make: cadillac_lyriq, lane_id: 0}
+  controller: cacc
