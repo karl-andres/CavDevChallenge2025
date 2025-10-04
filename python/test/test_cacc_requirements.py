@@ -45,7 +45,6 @@ def test_minimum_following_distance_requirement(scenario):
     lead_speed_mph = df['ACTOR_lead_speed'] * 2.237  # m/s to mph conversion
     
     # Calculate minimum allowed following distance using the formula
-    # CFD = 2.8 * (speed_mph)^0.45 + 8
     min_allowed_distances = 2.8 * (lead_speed_mph ** 0.45) + 8
     
     # Check if any following distance violates the requirement
