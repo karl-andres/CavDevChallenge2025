@@ -20,6 +20,7 @@ import argparse
 PROJECT_BASE = Path(__file__).parent.parent
 DRIVE_CYCLE_DIR = PROJECT_BASE / "config" / "drive_cycle"
 
+# setting a function for the drive cycle
 def create_cacc_optimized_drive_cycle(
     duration_sec: float = 100.0,
     dt: float = 0.02,
@@ -45,6 +46,7 @@ def create_cacc_optimized_drive_cycle(
     time = np.arange(0, duration_sec, dt)
     n_points = len(time)
     
+    # creates scenario based on road
     if scenario_type == "highway":
         # Highway scenario: mostly steady speeds with gradual changes
         speeds = create_highway_profile(time, max_speed_mps, min_speed_mps)
@@ -58,7 +60,7 @@ def create_cacc_optimized_drive_cycle(
     # Ensure speeds are within bounds
     speeds = np.clip(speeds, 0, max_speed_mps)
     
-    # Create DataFrame
+    # Based on the time and speeds above, it will be initalized in a dataframe
     df = pd.DataFrame({
         'Time (s)': time,
         'Speed (m/s)': speeds
@@ -68,14 +70,19 @@ def create_cacc_optimized_drive_cycle(
 
 def create_highway_profile(time: np.ndarray, max_speed: float, min_speed: float) -> np.ndarray:
     """Create a highway driving profile with steady speeds and gradual changes."""
+    
+    # Makes all the speeds 0 in the array, basically initializing values
     speeds = np.zeros_like(time)
     
     # Phase 1: Acceleration to cruising speed (0-20s)
+    # Makes sure its to 80% of the max speed since its on the highway
     accel_phase = time <= 20
     speeds[accel_phase] = np.linspace(0, max_speed * 0.8, np.sum(accel_phase))
     
     # Phase 2: Steady cruising (20-40s)
+    # Now the speeds have shifted from rapidly moving to slightly
     cruise_phase = (time > 20) & (time <= 40)
+    # speed is constant, no change like linspace
     speeds[cruise_phase] = max_speed * 0.8
     
     # Phase 3: Speed adjustment for following (40-60s)
