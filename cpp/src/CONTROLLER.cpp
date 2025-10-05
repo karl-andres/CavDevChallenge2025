@@ -53,6 +53,10 @@ void CaccController::controllerStep(
         double gapError = leadXPos - desiredGap;
 
         if (gapError < 0.0) {
+            // ❌ Too close → brake to restore gap
+            accelerationCmd = kp_gap * gapError;
+        } else {
+            // ✅ Safe → follow the lead’s speed
             // Too close → brake to restore gap
             accelerationCmd = kp_gap * gapError;
         } else {
